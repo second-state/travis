@@ -34,7 +34,7 @@ import:
   - types
 - package: github.com/ethereum/go-ethereum
   repo: https://github.com/second-state/lityvm.git
-  version: 557cc4935d94d6e1d6b947143788838ca98908f9
+  version: 4365812b1f2e87fe2213b2c0a494e6dd4f5fd42d
 - package: gopkg.in/urfave/cli.v1
   version: 1.x
 - package: github.com/mattn/go-sqlite3
