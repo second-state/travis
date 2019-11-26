@@ -36,8 +36,7 @@ func NewEthRPCService(b *Backend, nonceLock *AddrLocker) *EthRPCService {
 // GetTransactionCount returns the number of transactions sent from the given address.
 // blockNr is useless, be compatible with eth call
 func (s *EthRPCService) GetTransactionCount(address common.Address, blockNr rpc.BlockNumber) (*hexutil.Uint64, error) {
-	state := s.backend.ManagedState()
-	nonce := state.GetNonce(address)
+	nonce := s.backend.noncer.Get(address)
 
 	return (*hexutil.Uint64)(&nonce), nil
 }

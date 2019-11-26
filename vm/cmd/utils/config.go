@@ -3,17 +3,17 @@ package utils
 import (
 	"math/big"
 	"os"
-
-	cli "gopkg.in/urfave/cli.v1"
+	"path/filepath"
 
 	ethUtils "github.com/ethereum/go-ethereum/cmd/utils"
 	"github.com/ethereum/go-ethereum/consensus/ethash"
+	"github.com/ethereum/go-ethereum/core/vm"
 	"github.com/ethereum/go-ethereum/eth"
 	"github.com/ethereum/go-ethereum/node"
 	"github.com/ethereum/go-ethereum/params"
-
 	"github.com/second-state/devchain/api"
 	"github.com/second-state/devchain/vm/ethereum"
+	cli "gopkg.in/urfave/cli.v1"
 )
 
 const (
@@ -55,7 +55,7 @@ func MakeFullNode(ctx *cli.Context) *ethereum.Node {
 
 func makeConfigNode(ctx *cli.Context) (*ethereum.Node, gethConfig) {
 	cfg := gethConfig{
-		Eth:  eth.DefaultConfig,
+		Eth:  DefaultEthConfig(),
 		Node: DefaultNodeConfig(),
 	}
 
@@ -72,6 +72,18 @@ func makeConfigNode(ctx *cli.Context) (*ethereum.Node, gethConfig) {
 	return stack, cfg
 }
 
+func DefaultEthConfig() eth.Config {
+	cfg := eth.DefaultConfig
+
+	// Get Ewasm interpreter
+	if path, ok := os.LookupEnv("EVMC_LIBRARY_PATH"); ok {
+		cfg.EWASMInterpreter = filepath.Join(path, "libhera.so")
+		vm.InitEVMCEwasm(cfg.EWASMInterpreter)
+	}
+
+	return cfg
+}
+
 // DefaultNodeConfig returns the default configuration for a go-ethereum node
 // #unstable
 func DefaultNodeConfig() node.Config {
@@ -81,6 +93,8 @@ func DefaultNodeConfig() node.Config {
 	cfg.HTTPModules = append(cfg.HTTPModules, "eth")
 	cfg.WSModules = append(cfg.WSModules, "eth")
 	cfg.IPCPath = "cybermiles.ipc"
+	cfg.InsecureUnlockAllowed = true
+	cfg.NoUSB = true
 
 	emHome := os.Getenv(emHome)
 	if emHome != "" {

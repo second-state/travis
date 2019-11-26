@@ -15,6 +15,9 @@ RUN mkdir -p libeni \
   && tar zxvf libeni/*.tgz -C libeni \
   && mkdir -p $LIBENI_PATH && cp libeni/*/lib/* $LIBENI_PATH
 
+# hera
+RUN wget -O /app/lib/libhera.so https://github.com/second-state/devchain/releases/download/devchain-v1.9.2-evmc-v6.3.0/libhera-0.2.0-linux-x86_64.so
+
 # get devchain source code
 WORKDIR /go/src/github.com/second-state/devchain
 # copy devchain source code from local
@@ -39,6 +42,7 @@ RUN apt-get update \
 WORKDIR /app
 ENV ENI_LIBRARY_PATH=/app/lib
 ENV LD_LIBRARY_PATH=/app/lib
+ENV EVMC_LIBRARY_PATH=/app/lib
 
 # add the binary
 COPY --from=build-env /go/src/github.com/second-state/devchain/build/devchain .

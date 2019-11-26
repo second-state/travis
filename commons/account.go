@@ -2,16 +2,17 @@ package commons
 
 import (
 	"fmt"
-	"github.com/second-state/devchain/sdk"
-	"github.com/second-state/devchain/utils"
-	"github.com/ethereum/go-ethereum/accounts"
-	"github.com/ethereum/go-ethereum/accounts/keystore"
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/core/state"
 	"math"
 	"os"
 	"path/filepath"
 	"time"
+
+	"github.com/ethereum/go-ethereum/accounts"
+	"github.com/ethereum/go-ethereum/accounts/keystore"
+	"github.com/ethereum/go-ethereum/common"
+	"github.com/ethereum/go-ethereum/core/state"
+	"github.com/second-state/devchain/sdk"
+	"github.com/second-state/devchain/utils"
 )
 
 const (
@@ -37,7 +38,7 @@ func MakeAccountManager() (*accounts.Manager, string, error) {
 		keystore.NewKeyStore(keydir, scryptN, scryptP),
 	}
 
-	return accounts.NewManager(backends...), ephemeral, nil
+	return accounts.NewManager(&accounts.Config{InsecureUnlockAllowed: false}, backends...), ephemeral, nil
 }
 
 // fetchKeystore retrives the encrypted keystore from the account manager.

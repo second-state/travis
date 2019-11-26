@@ -104,7 +104,9 @@ func startNode(ctx *cli.Context, stack *ethereum.Node) {
 			if err := wallet.Open(""); err != nil {
 				log.Warn("Failed to open wallet", "url", wallet.URL(), "err", err)
 			} else {
-				wallet.SelfDerive(accounts.DefaultBaseDerivationPath, stateReader)
+				var derivationPaths []accounts.DerivationPath
+				derivationPaths = append(derivationPaths, accounts.DefaultBaseDerivationPath)
+				wallet.SelfDerive(derivationPaths, stateReader)
 			}
 		}
 		// Listen for wallet event till termination
@@ -117,8 +119,9 @@ func startNode(ctx *cli.Context, stack *ethereum.Node) {
 					status, _ := event.Wallet.Status()
 					log.Info("New wallet appeared", "url", event.Wallet.URL(),
 						"status", status)
-					event.Wallet.SelfDerive(accounts.DefaultBaseDerivationPath,
-						stateReader)
+					var derivationPaths []accounts.DerivationPath
+					derivationPaths = append(derivationPaths, accounts.DefaultBaseDerivationPath)
+					event.Wallet.SelfDerive(derivationPaths, stateReader)
 				}
 			} else {
 				log.Info("Old wallet dropped", "url", event.Wallet.URL())

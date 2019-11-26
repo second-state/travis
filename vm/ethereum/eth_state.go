@@ -11,7 +11,6 @@ import (
 	"github.com/ethereum/go-ethereum/core/state"
 	"github.com/ethereum/go-ethereum/core/types"
 	ethTypes "github.com/ethereum/go-ethereum/core/types"
-	"github.com/ethereum/go-ethereum/core/vm"
 	"github.com/ethereum/go-ethereum/eth"
 	"github.com/ethereum/go-ethereum/ethdb"
 	"github.com/ethereum/go-ethereum/log"
@@ -210,7 +209,7 @@ func (ws *workState) deliverTx(blockchain *core.BlockChain, config *eth.Config,
 		ws.header,
 		tx,
 		ws.totalUsedGas,
-		vm.Config{EnablePreimageRecording: config.EnablePreimageRecording},
+		*blockchain.GetVMConfig(),
 	)
 	if err != nil {
 		return abciTypes.ResponseDeliverTx{Code: errors.CodeTypeInternalErr, Log: err.Error()}
@@ -237,7 +236,7 @@ func (ws *workState) deliverTx(blockchain *core.BlockChain, config *eth.Config,
 func (ws *workState) commit(blockchain *core.BlockChain, db ethdb.Database, receiver common.Address) (common.Hash, error) {
 	currentHeight := ws.header.Number.Int64()
 
-	proposalIds := utils.PendingProposal.ReachMin(ws.parent.Time().Int64(), currentHeight)
+	proposalIds := utils.PendingProposal.ReachMin(int64(ws.parent.Time()), currentHeight)
 	for _, pid := range proposalIds {
 		proposal := gov.GetProposalById(pid)
 
@@ -355,10 +354,9 @@ func (ws *workState) commit(blockchain *core.BlockChain, db ethdb.Database, rece
 
 		ws.es.resetWorkState(receiver)
 
-		pt := ws.parent.Time()
-		pt = pt.Add(pt, big.NewInt(1))
+		pt := ws.parent.Time() + 1
 		config := ws.es.ethereum.APIBackend.ChainConfig()
-		ws.updateHeaderWithTimeInfo(config, pt.Uint64(), 0, []byte{1})
+		ws.updateHeaderWithTimeInfo(config, uint64(pt), 0, []byte{1})
 
 		hashArray, er := ws.state.Commit(true)
 		if er != nil {
@@ -427,7 +425,7 @@ func (ws *workState) updateHeaderWithTimeInfo(
 	hi := big.NewInt(0)
 	hi.SetBytes(blockHash)
 	ws.header.Difficulty = hi
-	ws.header.Time = new(big.Int).SetUint64(parentTime)
+	ws.header.Time = parentTime
 	ws.transactions = make([]*ethTypes.Transaction, 0, numTx)
 	ws.receipts = make([]*ethTypes.Receipt, 0, numTx)
 	ws.allLogs = make([]*ethTypes.Log, 0, numTx)

@@ -186,13 +186,15 @@ describe("Transaction Test", function() {
   describe("Send fee CMT TX from A to B 3 times within 10s", function() {
     it("expect all to succeed", function(done) {
       let arrHash = [],
+        nonce = web3.cmt.getTransactionCount(Globals.Accounts[0]),
         times = 3
       for (i = 0; i < times; ++i) {
         let hash = Utils.transfer(
           Globals.Accounts[0],
           Globals.Accounts[1],
           value,
-          gasPrice
+          gasPrice,
+          nonce + i,
         )
         arrHash.push(hash)
       }

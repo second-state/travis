@@ -20,6 +20,7 @@ describe("Contract Test", function() {
     let arrFund = []
     let initialFund = 1000 // 1000 ether or 1000 token
     let estimateCost = 100 // at most. not so much in fact
+    let nonce = web3.cmt.getTransactionCount(web3.cmt.defaultAccount)
 
     for (i = 0; i < 4; ++i) {
       if (balances[i] > estimateCost) continue
@@ -28,7 +29,8 @@ describe("Contract Test", function() {
         web3.cmt.defaultAccount,
         Globals.Accounts[i],
         initialFund,
-        gasPrice
+        gasPrice,
+        nonce + i,
       )
       arrFund.push(hash)
     }
@@ -243,13 +245,15 @@ describe("Contract Test", function() {
   describe("Send fee ETH TX from A to B 3 times within 10s.", function() {
     it("expect all to succeed", function(done) {
       let arrHash = [],
+        nonce = web3.cmt.getTransactionCount(Globals.Accounts[0]),
         times = 3
       for (i = 0; i < times; ++i) {
         let hash = Utils.tokenTransfer(
           Globals.Accounts[0],
           Globals.Accounts[1],
           tokens,
-          gasPrice
+          gasPrice,
+          nonce + i,
         )
         arrHash.push(hash)
       }

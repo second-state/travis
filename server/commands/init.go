@@ -11,7 +11,7 @@ import (
 	"database/sql"
 	ethUtils "github.com/ethereum/go-ethereum/cmd/utils"
 	"github.com/ethereum/go-ethereum/core"
-	"github.com/ethereum/go-ethereum/ethdb"
+	"github.com/ethereum/go-ethereum/core/rawdb"
 	"github.com/ethereum/go-ethereum/log"
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/second-state/devchain/types"
@@ -114,8 +114,8 @@ func initEthermint() error {
 
 	ethermintDataDir := emtUtils.MakeDataDir(context)
 
-	chainDb, err := ethdb.NewLDBDatabase(filepath.Join(ethermintDataDir,
-		"vm/chaindata"), 0, 0)
+	chainDb, err := rawdb.NewLevelDBDatabase(filepath.Join(ethermintDataDir,
+		"vm/chaindata"), 0, 0, "")
 	if err != nil {
 		ethUtils.Fatalf("could not open database: %v", err)
 	}

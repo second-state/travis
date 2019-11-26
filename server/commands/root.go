@@ -67,7 +67,6 @@ var (
 		ethUtils.NoUSBFlag,
 		// Performance tuning
 		ethUtils.CacheFlag,
-		ethUtils.TrieCacheGenFlag,
 		// Account settings
 		ethUtils.UnlockedAccountFlag,
 		ethUtils.PasswordFileFlag,
@@ -79,8 +78,6 @@ var (
 		ethUtils.GpoBlocksFlag,
 		ethUtils.GpoPercentileFlag,
 		emtUtils.TargetGasLimitFlag,
-		// Gas Price
-		ethUtils.GasPriceFlag,
 		// Network Id
 		ethUtils.NetworkIdFlag,
 		ethUtils.ListenPortFlag,

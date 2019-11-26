@@ -88,6 +88,7 @@ before("Transfer 5000000 CMT to A, B, C, D from defaultAccount", function(done) 
   logger.info(this.test.fullTitle())
   let balances = Utils.getBalance()
   let arrFund = []
+  let nonce = web3.cmt.getTransactionCount(web3.cmt.defaultAccount)
   for (i = 0; i < 4; ++i) {
     // 2000000 cmt should be far enough for the testing
     if (web3.fromWei(balances[i], "cmt") > 2000000) continue
@@ -96,7 +97,8 @@ before("Transfer 5000000 CMT to A, B, C, D from defaultAccount", function(done) 
       web3.cmt.defaultAccount,
       Globals.Accounts[i],
       web3.toWei(5000000, "cmt"),
-      5 //gwei
+      5, //gwei
+      nonce + i,
     )
     arrFund.push(hash)
   }

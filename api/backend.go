@@ -48,8 +48,8 @@ type Backend struct {
 	// travis chain id
 	chainID string
 
-	// moved from txpool.pendingState
-	managedState *state.ManagedState
+	// use txNoncer instread of ManagedState
+	noncer *core.TxNoncer
 }
 
 // NewBackend creates a new Backend
@@ -87,17 +87,17 @@ func NewBackend(ctx *node.ServiceContext, ethConfig *eth.Config) (*Backend, erro
 	return ethBackend, nil
 }
 
-func (b *Backend) ResetState() (*state.ManagedState, error) {
+func (b *Backend) ResetState() (*state.StateDB, error) {
 	currentState, err := b.Ethereum().BlockChain().State()
 	if err != nil {
 		return nil, err
 	}
-	b.managedState = state.ManageState(currentState)
-	return b.managedState, nil
+	b.noncer = core.NewTxNoncer(currentState)
+	return b.noncer.State(), nil
 }
 
-func (b *Backend) ManagedState() *state.ManagedState {
-	return b.managedState
+func (b *Backend) ManagedState() *state.StateDB {
+	return b.noncer.State()
 }
 
 // Ethereum returns the underlying the ethereum object.
@@ -264,7 +264,7 @@ func (NullBlockProcessor) ValidateBody(*ethTypes.Block) error { return nil }
 
 // ValidateState does not validate anything
 // #unstable
-func (NullBlockProcessor) ValidateState(block, parent *ethTypes.Block, state *state.StateDB,
+func (NullBlockProcessor) ValidateState(block *ethTypes.Block, state *state.StateDB,
 	receipts ethTypes.Receipts, usedGas uint64) error {
 	return nil
 }

@@ -49,7 +49,7 @@ func (args *SendTxArgs) setDefaults(b *Backend) error {
 		args.Value = new(hexutil.Big)
 	}
 	if args.Nonce == nil {
-		nonce := b.ManagedState().GetNonce(args.From)
+		nonce := b.noncer.Get(args.From)
 		args.Nonce = (*hexutil.Uint64)(&nonce)
 	}
 	if args.Data != nil && args.Input != nil && !bytes.Equal(*args.Data, *args.Input) {

@@ -64,6 +64,7 @@ func DevGenesisBlock() *core.Genesis {
 			EIP155Block:    big.NewInt(0),
 			EIP158Block:    big.NewInt(0),
 			ByzantiumBlock: big.NewInt(0),
+			EWASMBlock:     big.NewInt(0),
 		},
 		Nonce:      uint64(0xdeadbeefdeadbeef),
 		ExtraData:  hexutil.MustDecode("0x"),

@@ -7,10 +7,9 @@ BASEDIR=$(pwd)
 
 # setup cluster
 mkdir -p ~/volumes
-git clone https://github.com/second-state/testnet.git ~/volumes/testnet
+git clone https://github.com/second-state/testnet.git -b devchain ~/volumes/testnet
 
 cd ~/volumes/testnet/devchain/scripts
-git checkout master
 yes "" | sudo ./cluster.sh test 6 4
 docker-compose up -d all
 sleep 3
