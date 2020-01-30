@@ -10,7 +10,7 @@ let V = web3.cmt.defaultAccount
 describe("Governance Test", function() {
   let proposalId = ""
   let balance_old, balance_new, tx_result
-  const EXPIRE_BLOCKS = 5
+  const EXPIRE_BLOCKS = 10
 
   describe("Account #1 does not have 500 CMTs.", function() {
     before(function() {
