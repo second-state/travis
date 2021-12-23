@@ -10,8 +10,8 @@ import (
 	"github.com/ethereum/go-ethereum/accounts/keystore"
 	ethUtils "github.com/ethereum/go-ethereum/cmd/utils"
 
-	"github.com/second-state/devchain/server/commands"
-	"github.com/second-state/devchain/vm/cmd/utils"
+	"github.com/vangjvn/devchain/server/commands"
+	"github.com/vangjvn/devchain/vm/cmd/utils"
 )
 
 var accountCmd = &cobra.Command{
